@@ -1,0 +1,9 @@
+*~
+*.lso
+*.gise
+*.xise
+*.html
+*.cmd_log
+/iseconfig/
+*.prj
+*.txt
