@@ -15,7 +15,7 @@ use WORK.my_pkg.all;
 
 entity ParityCheck is		
     Port(
-		parity_data_i		: in  STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
+		parity_data_i		: in  STD_LOGIC_VECTOR (FIFO_WIDTH-1 downto 0);
       parity_valid_i 	: in  STD_LOGIC;
       parity_grant_o 	: out  STD_LOGIC;
       parity_valid_o 	: out  STD_LOGIC;

@@ -15,17 +15,17 @@ entity FifoParityCheckerUB_TOP is
     Port(
 		clk 		: in  STD_LOGIC;
       rst_n 	: in  STD_LOGIC;
-      data_i   : in  STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
+      data_i   : in  STD_LOGIC_VECTOR (FIFO_WIDTH-1 downto 0);
       valid_i  : in  STD_LOGIC;
       grant_o  : out  STD_LOGIC;
-      data_o   : out  STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
+      data_o   : out  STD_LOGIC_VECTOR (FIFO_WIDTH-1 downto 0);
       valid_o 	: out  STD_LOGIC;
       grant_i 	: in  STD_LOGIC);
 end FifoParityCheckerUB_TOP;
 
 architecture Behavioral of FifoParityCheckerUB_TOP is
 
-	signal data_signal : STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
+	signal data_signal : STD_LOGIC_VECTOR (FIFO_WIDTH-1 downto 0);
 	signal pop_valid_o_signal : STD_LOGIC;
 	signal pop_grant_i_signal : STD_LOGIC;
 begin
@@ -44,11 +44,10 @@ begin
 	TopParityCheck: entity work.ParityCheck PORT MAP(
 		parity_data_i => data_signal,
 		parity_valid_o => valid_o,
-		parity_grant_o => pop_valid_o_signal,
+		parity_grant_o => pop_grant_i_signal,
 		parity_valid_i => pop_valid_o_signal,
-		parity_grant_i => pop_grant_i_signal
+		parity_grant_i => grant_i
 	);
 
 	data_o <= data_signal;
 end Behavioral;
-

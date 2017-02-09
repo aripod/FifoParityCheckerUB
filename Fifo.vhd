@@ -17,10 +17,10 @@ entity Fifo is
    Port(
 		clk				: in  STD_LOGIC;
       rst_n 			: in  STD_LOGIC;
-      push_data_i 	: in  STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
+      push_data_i 	: in  STD_LOGIC_VECTOR (FIFO_WIDTH-1 downto 0);
       push_valid_i 	: in  STD_LOGIC;
       push_grant_o 	: out  STD_LOGIC;
-      pop_data_o 		: out  STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
+      pop_data_o 		: out  STD_LOGIC_VECTOR (FIFO_WIDTH-1 downto 0);
       pop_valid_o 	: out  STD_LOGIC;
       pop_grant_i 	: in  STD_LOGIC
 		);
@@ -32,4 +32,3 @@ begin
 
 
 end Behavioral;
-
