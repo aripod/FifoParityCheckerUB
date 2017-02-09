@@ -7,7 +7,9 @@
 -- Description: Synchronous FIFO with the following parameters:
 -- 	DATA_WIDTH = WIDTH+1 where 1 is the parity bit.
 --		FIFO_DEPTH (depth >=2)
---
+--		Parity: EVEN (1) or ODD (0).
+-- 	Parity BIT: MSB (1) or LSB (0).
+--	This parameters can be changed in my_pkg.vhd file.
 ----------------------------------------------------------------------------------
 library IEEE;
 USE ieee.std_logic_1164.ALL;
@@ -32,7 +34,7 @@ end Fifo;
 
 architecture Behavioral of Fifo is
 	type reg_type is array (FIFO_DEPTH-1 downto 0) of STD_LOGIC_VECTOR (FIFO_WIDTH-1 downto 0);				-- FIFO_WIDTH x FIFO_DEPTH 2D-array.
-	signal array_reg : reg_type;																									-- FIFO itself. Here data is stored.
+	signal array_reg : reg_type;																									-- FIFO itself. Data is stored here.
 	signal write_ptr_reg, write_ptr_next, write_ptr_succ : STD_LOGIC_VECTOR (FIFO_DEPTH-1 downto 0);		-- Write control registers.
 	signal read_ptr_reg, read_ptr_next, read_ptr_succ : STD_LOGIC_VECTOR (FIFO_DEPTH-1 downto 0);			-- Read control registers.
 	signal full_reg, empty_reg, full_next, empty_next : STD_LOGIC;														-- Status registers
@@ -44,19 +46,20 @@ architecture Behavioral of Fifo is
 		process(clk, rst_n)
 		begin
 			if(rst_n='0') then
-				array_reg <= (others=>(others=>'0'));	-- Sets the entire array_reg to 0.
+				array_reg <= (others=>(others=>'0'));	-- Sets the entire array_reg (2D-array) to 0.
 			elsif (clk'event and clk='1') then 		-- Rising edge of the clock.
 				if (wr_en='1') then
 					array_reg(to_integer(unsigned(write_ptr_reg))) <= push_data_i;	-- It writes the incoming data (push_data_i) to the corresponding position in the FIFO.
-																										-- It expects an intiger as the position in the array. Therefore the 'to_intiger' function).
+																										-- It expects an intiger as the position in the array. Therefore the 'to_intiger' function.
 				end if;
 			end if;
 		end process;
 		
 		-- Input port:
-		wr_en <= push_valid_i and (not full_reg);
+		wr_en <= push_valid_i and (not full_reg);	-- Input 'request' to push and FIFO is NOT full it is possible to write.
 		push_grant_o <= not full_reg;					-- Outputs if the FIFO is FULL (push_grant_o=0)
 		-- Output port:
+		-- This is done differently from the input port as the output data ('first-in', pointed by read_ptr_reg)has to be available all the time.
 		pop_data_o <= array_reg(to_integer(unsigned(read_ptr_reg)));
 		
 		-- ** INTERNAL REGISTERS (pointers) CONTROL ** --
@@ -75,11 +78,11 @@ architecture Behavioral of Fifo is
 			end if;
 		end process;
 		
-		-- Successive values to read and write when requested. Take from the 2D-array to 1D arrays correspondingly.
+		-- Successive values to read and write when requested. Take from the 2D-array to 1D arrays correspondingly (next position).
 		write_ptr_succ <= STD_LOGIC_VECTOR(unsigned(write_ptr_reg)+1);
 		read_ptr_succ <= STD_LOGIC_VECTOR(unsigned(read_ptr_reg)+1);
 		
-		-- Next stage logic (CHANGE <-- THIS TITLE)
+		-- ** Next clock even registers ** --
 		operation <= push_valid_i & pop_grant_i;	-- Concatenates the two control inputs for the 'case, when' statement.
 		process(write_ptr_reg, write_ptr_succ, read_ptr_reg, read_ptr_succ,
 				  operation, full_reg, empty_reg)
@@ -91,28 +94,28 @@ architecture Behavioral of Fifo is
 			case operation is
 				when "00" =>											-- Not write (push) or read (pop).
 				when "01" =>											-- Read.
-					if(empty_reg /= '1') then						-- FIFO has data to be read (NOT empty).
+					if(empty_reg /= '1') then						-- If FIFO is NOT empty, it can be read.
 						read_ptr_next <= read_ptr_succ;			-- It points to the successive position to read.
-						full_next <= '0';								-- As one position was read, FIFO is NOT full.
-						if(read_ptr_succ=write_ptr_reg) then	-- Read 'reached' write. So the FIFO is EMPTY.
+						full_next <= '0';								-- As one position is read, FIFO will NOT be full.
+						if(read_ptr_succ=write_ptr_reg) then	-- Read 'reached' write. So the FIFO will be EMPTY.
 							empty_next <= '1';
 						end if;
 					end if;
 				when "10" => 											-- Write.
 					if(full_reg /='1') then							-- If FIFO is NOT full, it can be written.
 						write_ptr_next <= write_ptr_succ;
-						empty_next <= '0';							-- The FIFO was written, so it is NOT empty.
-						if(write_ptr_succ=read_ptr_reg) then	-- Write 'reached' read, so the FIFO is full.
+						empty_next <= '0';							-- The FIFO is written, so it will NOT be empty.
+						if(write_ptr_succ=read_ptr_reg) then	-- Write 'reached' read, so the FIFO will be full.
 							full_next <= '1';
 						end if;
 					end if;
-				when others => 											-- Write and Read at the same time.
+				when others => 										-- Write and Read at the same time.
 					write_ptr_next <= write_ptr_succ;
 					read_ptr_next <= read_ptr_succ;
 				end case;
 		end process;
 		
-		-- 
+		-- Output STATUS
 		push_grant_o <= not full_reg;
 		pop_valid_o <= not empty_reg;
 		
