@@ -11,12 +11,9 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use WORK.my_pkg.all;
 
-entity ParityCheck is
-	Generic(
-		constant DATA_WIDTH  : positive := 2
-		);
-		
+entity ParityCheck is		
     Port(
 		parity_data_i		: in  STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
       parity_valid_i 	: in  STD_LOGIC;

@@ -11,13 +11,9 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use WORK.my_pkg.all;
 
-entity Fifo is
-	Generic(
-		constant DATA_WIDTH  : positive := 2; --DATAWIDTH=WIDTH+1bitParity
-		constant FIFO_DEPTH	: positive := 4
-		);
-		
+entity Fifo is		
    Port(
 		clk				: in  STD_LOGIC;
       rst_n 			: in  STD_LOGIC;
