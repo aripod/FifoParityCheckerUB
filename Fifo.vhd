@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------
 -- Author: Ariel Podlubne
--- Task: Design and verification of a FIFO with parity checker.
+-- Task: Design and verification of a FIFO.
 -- Reason: Excersie pre-interview (Universita di Bologna - Prof. Benini, Prof. Rossi)
 
 -- Component: Fifo
@@ -33,62 +33,53 @@ entity Fifo is
 end Fifo;
 
 architecture Behavioral of Fifo is
-	type reg_type is array (FIFO_DEPTH-1 downto 0) of STD_LOGIC_VECTOR (FIFO_WIDTH-1 downto 0);				-- FIFO_WIDTH x FIFO_DEPTH 2D-array.
+	type reg_type is array (2**FIFO_DEPTH-1 downto 0) of STD_LOGIC_VECTOR (FIFO_WIDTH-1 downto 0);				-- FIFO_WIDTH x FIFO_DEPTH 2D-array.
 	signal array_reg : reg_type;																									-- FIFO itself. Data is stored here.
 	signal write_ptr_reg, write_ptr_next, write_ptr_succ : STD_LOGIC_VECTOR (FIFO_DEPTH-1 downto 0);		-- Write control registers.
 	signal read_ptr_reg, read_ptr_next, read_ptr_succ : STD_LOGIC_VECTOR (FIFO_DEPTH-1 downto 0);			-- Read control registers.
-	signal full_reg, empty_reg, full_next, empty_next : STD_LOGIC;														-- Status registers
-	signal operation : STD_LOGIC_VECTOR (1 downto 0);																		-- Operation 2 bit array 
+	signal full_reg, full_next  : STD_LOGIC := '0';																			-- Status registers
+	signal empty_reg, empty_next : STD_LOGIC := '1';																		-- Status registers
+	signal operation : STD_LOGIC_VECTOR (1 downto 0) := "00";															-- Operation 2 bit array 
 	signal wr_en: STD_LOGIC;																										-- Write possible register.
 	
 	begin
-		-- ** PORTs CONTROL ** --
+		-- ** PUSH & POP PORTS (data) ** --
 		process(clk, rst_n)
 		begin
 			if(rst_n='0') then
-				array_reg <= (others=>(others=>'0'));	-- Sets the entire array_reg (2D-array) to 0.
-			elsif (clk'event and clk='1') then 		-- Rising edge of the clock.
-				if (wr_en='1') then
-					array_reg(to_integer(unsigned(write_ptr_reg))) <= push_data_i;	-- It writes the incoming data (push_data_i) to the corresponding position in the FIFO.
-																										-- It expects an intiger as the position in the array. Therefore the 'to_intiger' function.
-				end if;
-			end if;
-		end process;
-		
-		-- Input port:
-		wr_en <= push_valid_i and (not full_reg);	-- Input 'request' to push and FIFO is NOT full it is possible to write.
-		push_grant_o <= not full_reg;					-- Outputs if the FIFO is FULL (push_grant_o=0)
-		-- Output port:
-		-- This is done differently from the input port as the output data ('first-in', pointed by read_ptr_reg)has to be available all the time.
-		pop_data_o <= array_reg(to_integer(unsigned(read_ptr_reg)));
-		
-		-- ** INTERNAL REGISTERS (pointers) CONTROL ** --
-		process(clk, rst_n)
-		begin
-			if(rst_n='0') then
+				array_reg <= (others=>(others=>'0'));										-- Sets the entire array_reg (2D-array) to 0.
 				write_ptr_reg <= (others=>'0');	-- Resets all write registers (to 0).
 				read_ptr_reg <= (others=>'0');	-- Resets all read registers (to 0).
 				full_reg <= '0';						-- Full register is set to 0 as FIFO is not FULL.
 				empty_reg <= '1';						-- Empty register is set to 1 as FIFO is empty.
-			elsif(clk'event and clk='1') then	-- Rising edge of the clock.
+			elsif (clk'event and clk='1') then 												-- Rising edge of the clock.
+				if (wr_en='1') then
+					array_reg(to_integer(unsigned(write_ptr_reg))) <= push_data_i;	-- It writes the incoming data (push_data_i) to the corresponding position in the FIFO.
+																										-- It expects an intiger as the position in the array. Therefore the 'to_intiger' function.
+				end if;
 				write_ptr_reg <= write_ptr_next;	-- Current write position becomes the next one on clock event.
 				read_ptr_reg <= read_ptr_next;	-- Current read position becomes the next one on clock event.
 				full_reg <= full_next;				-- Current full position becomes the next one on clock event.
 				empty_reg <= empty_next;			-- Current empty position becomes the next one on clock event.
 			end if;
 		end process;
-		
-		-- Successive values to read and write when requested. Take from the 2D-array to 1D arrays correspondingly (next position).
+		-- Input port:
+		wr_en <= push_valid_i and (not full_reg);	-- If FIFO is NOT full it is possible to write.
+		-- Output port:
+		-- It is done differently from the input port as the output data ('first-in', pointed by read_ptr_reg)has to be available all the time.
+		pop_data_o <= array_reg(to_integer(unsigned(read_ptr_reg)));
+
+		-- Successive values to read and write when requested.
 		write_ptr_succ <= STD_LOGIC_VECTOR(unsigned(write_ptr_reg)+1);
 		read_ptr_succ <= STD_LOGIC_VECTOR(unsigned(read_ptr_reg)+1);
 		
-		-- ** Next clock even registers ** --
-		operation <= push_valid_i & pop_grant_i;	-- Concatenates the two control inputs for the 'case, when' statement.
+		-- ** Events and register control  ** --
+		operation <= (push_valid_i & pop_grant_i);	-- Concatenates the two control inputs for the 'case, when' statement.
 		process(write_ptr_reg, write_ptr_succ, read_ptr_reg, read_ptr_succ,
 				  operation, full_reg, empty_reg)
 		begin
-			write_ptr_next <= write_ptr_reg;
-			read_ptr_next <= read_ptr_reg;
+			write_ptr_next <= write_ptr_reg;		-- This for lines are to assure that the current state does not
+			read_ptr_next <= read_ptr_reg;		-- change in case none of the case-when statements happen.
 			full_next <= full_reg;
 			empty_next <= empty_reg;
 			case operation is
@@ -118,5 +109,4 @@ architecture Behavioral of Fifo is
 		-- Output STATUS
 		push_grant_o <= not full_reg;
 		pop_valid_o <= not empty_reg;
-		
 end Behavioral;
