@@ -4,7 +4,8 @@
 *.xise
 *.html
 *.cmd_log
-/iseconfig/
+*/iseconfig/
+iseconfig/
 *.prj
 *.txt
 *.exe
