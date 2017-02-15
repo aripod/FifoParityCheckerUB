@@ -27,6 +27,6 @@ package my_pkg is
 		--constant FIFO_DEPTH	: positive := 2;	-- The DEPTH of the FIFO will be 2^FIFO_DEPTH. In this case, 4 slots.
 		constant DATA_WIDTH  : positive := 3;
 		constant FIFO_WIDTH  : positive := DATA_WIDTH+1; 	--DATAWIDTH=WIDTH+1bitParity
-		constant PARITY		: bit		  := '0';	-- EVEN or ODD.
-		constant PARITY_BIT	: bit		  := '0';	-- LSB or MSB.
+		constant PARITY		: bit		  := '0';	-- ODD (0) or EVEN (1).
+		constant PARITY_BIT	: bit		  := '0';	-- LSB (0) or MSB (1).
 end my_pkg;

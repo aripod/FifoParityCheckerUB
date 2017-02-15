@@ -7,3 +7,11 @@
 /iseconfig/
 *.prj
 *.txt
+*.exe
+*.wdb
+/_xmsgs/
+*.cmd
+*.log
+*.ini
+/isim/
+*.xmsgs
