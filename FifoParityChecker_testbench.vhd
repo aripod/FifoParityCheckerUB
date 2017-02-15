@@ -54,9 +54,9 @@ BEGIN
    -- Clock process definitions
    clk_process :process
    begin
-		clk <= '0';
-		wait for clk_period/2;
 		clk <= '1';
+		wait for clk_period/2;
+		clk <= '0';
 		wait for clk_period/2;
    end process;
  
@@ -64,10 +64,35 @@ BEGIN
    -- Stimulus process
    stim_proc: process
    begin		
-      -- hold reset state for 100 ns.
+      -- hold reset state for 21 ns. (It is 21 ns so the changing state of the signals (stimulus) do not match with the
+		-- changing state (0->1 or 1->0) of the clock.
       wait for 21 ns;	
 
-      -- insert stimulus here 
+      rst_n <= '1';
+		grant_i <= '1';		-- Receiver is ready to get data.
+		wait for clk_period;
+		-- Cycle 2
+		valid_i <= '1';
+		data_i <= "1001";
+		wait for clk_period;
+		-- Cycle 3
+		data_i <= "1010";
+		wait for clk_period;
+		-- Cycle 4
+		data_i <= "1011";
+		wait for clk_period;
+		-- Cycle 5
+		data_i <= "1100";
+		wait for clk_period;
+		-- Cycle 6
+		data_i <= "1101";
+		wait for clk_period;
+		-- Cycle 7
+		wait for clk_period;
+		-- Cycle 8
+		valid_i <= '0';
+		data_i <= "1000";
+		--wait for clk_period;
 
       wait;
    end process;

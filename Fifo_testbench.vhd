@@ -2,7 +2,7 @@
 -- Company: 
 -- Engineer:
 --
--- Create Date:   15:20:19 02/14/2017
+-- Create Date:   15:15:33 02/13/2017
 -- Design Name:   
 -- Module Name:   /home/ariel/Documents/VHDL/FifoParityCheckerUB/Fifo/Fifo/Fifo_testbench.vhd
 -- Project Name:  Fifo
@@ -95,11 +95,11 @@ BEGIN
    -- Stimulus process
    stim_proc: process
    begin		
-      -- hold reset state for 100 ns.
-      wait for 21 ns;	
+      -- hold reset state for 20 ns.
+      wait for 20 ns;	
 
+--		-- ** Full the FIFO without POP (tested with FIFO_DEPTH=2; 2^FIFO_DEPTH=4 slots** --
 --		rst_n <= '1';
---
 --		push_valid_i <= '1';
 --		push_data_i <= "1001";
 --		wait for clk_period;
@@ -109,17 +109,17 @@ BEGIN
 --		wait for clk_period;
 --		push_data_i <= "1100";
 --		wait for clk_period;
+--		-- FIFO is full
 --		push_data_i <= "1101";
---		pop_grant_i <= '1';
 --		wait for clk_period;
 --		push_valid_i <= '0';
---		push_data_i <= "0000";
+--		-- ** FIFO is FULL at this point. Now it is emptied ** --
+--		pop_grant_i <= '1';
 --		wait for 4*clk_period;
---		pop_grant_i <= '0';
-
-
+		
+		
 		-- ** Mimics example from exercise ** --
-        rst_n <= '1';
+      rst_n <= '1';
 		pop_grant_i <= '0';
 		wait for clk_period;
 		-- Cycle 2
