@@ -95,28 +95,8 @@ BEGIN
    -- Stimulus process
    stim_proc: process
    begin		
-      -- hold reset state for 100 ns.
+      -- hold reset state for 21 ns when the clk changes its state, it does not match with the stimulus.
       wait for 21 ns;	
-
---		rst_n <= '1';
---
---		push_valid_i <= '1';
---		push_data_i <= "1001";
---		wait for clk_period;
---		push_data_i <= "1010";
---		wait for clk_period;
---		push_data_i <= "1011";
---		wait for clk_period;
---		push_data_i <= "1100";
---		wait for clk_period;
---		push_data_i <= "1101";
---		pop_grant_i <= '1';
---		wait for clk_period;
---		push_valid_i <= '0';
---		push_data_i <= "0000";
---		wait for 4*clk_period;
---		pop_grant_i <= '0';
-
 
 		-- ** Mimics example from exercise ** --
         rst_n <= '1';

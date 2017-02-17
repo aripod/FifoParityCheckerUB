@@ -29,24 +29,11 @@ entity Fifo is
 		-- STATUS
 		push_grant_o 	: out STD_LOGIC;												-- 0 when full. To write push_grant_o=1 and push_valid_i=1.
 		pop_valid_o 	: out STD_LOGIC												-- 1 where there is data available in the FIFO.
-		
---		-- TEST/DEBUG Purpose only
---	  PORT_write_ptr_reg : out STD_LOGIC_VECTOR (FIFO_DEPTH-1 downto 0);
---	  PORT_write_ptr_next : out STD_LOGIC_VECTOR (FIFO_DEPTH-1 downto 0);
---	  PORT_write_ptr_succ : out STD_LOGIC_VECTOR (FIFO_DEPTH-1 downto 0);
---
---	  PORT_read_ptr_reg : out STD_LOGIC_VECTOR (FIFO_DEPTH-1 downto 0);
---	  PORT_read_ptr_next : out STD_LOGIC_VECTOR (FIFO_DEPTH-1 downto 0);
---	  PORT_read_ptr_succ : out STD_LOGIC_VECTOR (FIFO_DEPTH-1 downto 0);
---
---	  PORT_full_reg, PORT_empty_reg, PORT_full_next, PORT_empty_next, PORT_wr_en : out STD_LOGIC;
---	  PORT_operation : out STD_LOGIC_VECTOR (1 downto 0);
---	  PORT_array : out STD_LOGIC_VECTOR (FIFO_WIDTH-1 downto 0)
 		);
 end Fifo;
 
 architecture Behavioral of Fifo is
-	type reg_type is array (2**FIFO_DEPTH-1 downto 0) of STD_LOGIC_VECTOR (FIFO_WIDTH-1 downto 0);				-- FIFO_WIDTH x FIFO_DEPTH 2D-array.
+	type reg_type is array (2**FIFO_DEPTH-1 downto 0) of STD_LOGIC_VECTOR (FIFO_WIDTH-1 downto 0);			-- FIFO_WIDTH x FIFO_DEPTH 2D-array.
 	signal array_reg : reg_type;																									-- FIFO itself. Data is stored here.
 	signal write_ptr_reg, write_ptr_next, write_ptr_succ : STD_LOGIC_VECTOR (FIFO_DEPTH-1 downto 0);		-- Write control registers.
 	signal read_ptr_reg, read_ptr_next, read_ptr_succ : STD_LOGIC_VECTOR (FIFO_DEPTH-1 downto 0);			-- Read control registers.
@@ -60,11 +47,11 @@ architecture Behavioral of Fifo is
 		process(clk, rst_n)
 		begin
 			if(rst_n='0') then
-				array_reg <= (others=>(others=>'0'));										-- Sets the entire array_reg (2D-array) to 0.
-				write_ptr_reg <= (others=>'0');	-- Resets all write registers (to 0).
-				read_ptr_reg <= (others=>'0');	-- Resets all read registers (to 0).
-				full_reg <= '0';						-- Full register is set to 0 as FIFO is not FULL.
-				empty_reg <= '1';						-- Empty register is set to 1 as FIFO is empty.
+				array_reg <= (others=>(others=>'0'));		-- Sets the entire array_reg (2D-array) to 0.
+				write_ptr_reg <= (others=>'0');				-- Resets all write registers (to 0).
+				read_ptr_reg <= (others=>'0');				-- Resets all read registers (to 0).
+				full_reg <= '0';									-- Full register is set to 0 as FIFO is not FULL.
+				empty_reg <= '1';									-- Empty register is set to 1 as FIFO is empty.
 			elsif (clk'event and clk='1') then 												-- Rising edge of the clock.
 				if (wr_en='1') then
 					array_reg(to_integer(unsigned(write_ptr_reg))) <= push_data_i;	-- It writes the incoming data (push_data_i) to the corresponding position in the FIFO.
@@ -122,19 +109,4 @@ architecture Behavioral of Fifo is
 		-- Output STATUS
 		push_grant_o <= not full_reg;
 		pop_valid_o <= not empty_reg;
-		
---		-- TEST/DEBUG ONLY
---	  PORT_write_ptr_reg <= write_ptr_reg;
---	  PORT_write_ptr_next <= write_ptr_next;
---	  PORT_write_ptr_succ <= write_ptr_succ;
---	  PORT_read_ptr_reg <= read_ptr_reg;
---	  PORT_read_ptr_next <= read_ptr_next;
---	  PORT_read_ptr_succ <= read_ptr_succ;
---	  PORT_full_reg <= full_reg;
---	  PORT_empty_reg <= empty_reg;
---	  PORT_full_next <= full_next;
---	  PORT_empty_next <= empty_next;
---	  PORT_wr_en <= wr_en;
---	  PORT_operation <= operation;
---	  PORT_array <= array_reg(0);
 end Behavioral;
