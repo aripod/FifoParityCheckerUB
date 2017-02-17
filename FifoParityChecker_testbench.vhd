@@ -1,5 +1,6 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
+USE ieee.numeric_std.ALL;
  
 ENTITY FifoParityChecker_testbench IS
 END FifoParityChecker_testbench;
@@ -33,9 +34,14 @@ ARCHITECTURE behavior OF FifoParityChecker_testbench IS
    signal grant_o : std_logic;
    signal data_o : std_logic_vector(3 downto 0);
    signal valid_o : std_logic;
+	--signal passed : std_logic_vector(3 downto 0);
 
    -- Clock period definitions
    constant clk_period : time := 10 ns;
+	
+	-- Variables
+	signal passed_variable: integer :=0;
+	
  
 BEGIN
  
@@ -68,8 +74,35 @@ BEGIN
 		-- changing state (0->1 or 1->0) of the clock.
       wait for 21 ns;	
 
-      rst_n <= '1';
-		grant_i <= '1';		-- Receiver is ready to get data.
+--		-- ** To test the parity check ** --
+--      rst_n <= '1';
+--		grant_i <= '1';		-- Receiver is ready to get data.
+--		wait for clk_period;
+--		-- Cycle 2
+--		valid_i <= '1';
+--		data_i <= "1001";
+--		wait for clk_period;
+--		-- Cycle 3
+--		data_i <= "1010";
+--		wait for clk_period;
+--		-- Cycle 4
+--		data_i <= "1011";
+--		wait for clk_period;
+--		-- Cycle 5
+--		data_i <= "1100";
+--		wait for clk_period;
+--		-- Cycle 6
+--		data_i <= "1101";
+--		wait for clk_period;
+--		-- Cycle 7
+--		wait for clk_period;
+--		-- Cycle 8
+--		valid_i <= '0';
+--		data_i <= "1000";
+		
+		-- ** Mimics example from exercise ** --
+        rst_n <= '1';
+		grant_i <= '0';
 		wait for clk_period;
 		-- Cycle 2
 		valid_i <= '1';
@@ -86,15 +119,21 @@ BEGIN
 		wait for clk_period;
 		-- Cycle 6
 		data_i <= "1101";
-		wait for clk_period;
+		wait for clk_period/4;
+		grant_i <= '1';
+		wait for clk_period/4;
+		wait for clk_period/2;
 		-- Cycle 7
 		wait for clk_period;
 		-- Cycle 8
 		valid_i <= '0';
+		grant_i <= '0';
 		data_i <= "1000";
-		--wait for clk_period;
+		wait for clk_period;
+		-- Cycle 9
+		wait for clk_period/4;
+		grant_i <= '1';
 
       wait;
    end process;
-
 END;
