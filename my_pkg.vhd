@@ -31,8 +31,9 @@ package my_pkg is
 		constant PARITY_BIT	: bit		  := '0';				-- LSB or MSB.
 		
 		-- ** Parameters for the Test Environment ** --
-		constant TEST_LENGTH 		: positive := 16;			-- Number of steps in the test.
-		constant STIMULUS_WIDTH	: positive := (FIFO_WIDTH+2);	-- Width of the stimulus (with valid_i included (Data+1 bit)).
+		constant TEST_LENGTH 		: positive := 16;					-- Number of steps in the test.
+		constant STIMULUS_WIDTH		: positive := (FIFO_WIDTH+2);	-- Width of the stimulus (with valid_i included (Data+1 bit)).
+		constant PUSH_AMOUNT 		: positive :=10;					-- 4 (FULL) + 4 (MAX BW) + 2 (50% BW).
 		type datatraffic is array (0 to TEST_LENGTH-1) of STD_LOGIC_VECTOR(STIMULUS_WIDTH-1 downto 0);
 		-- * Test Vector * --
 		-- Traffic: |Data(3 bits)|DataParity(1 bit)|TrafficType(2 bit)|
