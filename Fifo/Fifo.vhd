@@ -63,6 +63,27 @@ architecture Behavioral of Fifo is
 				empty_reg <= empty_next;			-- Current empty position becomes the next one on clock event.
 			end if;
 		end process;
+		
+		process(clk, rst_n)
+		begin
+			if(rst_n='0') then
+				array_reg <= (others=>(others=>'0'));		-- Sets the entire array_reg (2D-array) to 0.
+				write_ptr_reg <= (others=>'0');				-- Resets all write registers (to 0).
+				read_ptr_reg <= (others=>'0');				-- Resets all read registers (to 0).
+				full_reg <= '0';									-- Full register is set to 0 as FIFO is not FULL.
+				empty_reg <= '1';									-- Empty register is set to 1 as FIFO is empty.
+			elsif (clk'event and clk='1') then 												-- Rising edge of the clock.
+				if (wr_en='1') then
+					array_reg(to_integer(unsigned(write_ptr_reg))) <= push_data_i;	-- It writes the incoming data (push_data_i) to the corresponding position in the FIFO.
+																										-- It expects an intiger as the position in the array. Therefore the 'to_intiger' function.										
+				end if;
+				write_ptr_reg <= write_ptr_next;	-- Current write position becomes the next one on clock event.
+				read_ptr_reg <= read_ptr_next;	-- Current read position becomes the next one on clock event.
+				full_reg <= full_next;				-- Current full position becomes the next one on clock event.
+				empty_reg <= empty_next;			-- Current empty position becomes the next one on clock event.
+			end if;
+		end process;
+		
 		-- Input port:
 		wr_en <= push_valid_i and (not full_reg);	-- If FIFO is NOT full it is possible to write.
 		-- Output port:
@@ -74,7 +95,7 @@ architecture Behavioral of Fifo is
 		read_ptr_succ <= STD_LOGIC_VECTOR(unsigned(read_ptr_reg)+1);
 		
 		-- ** Events and register control  ** --
-		operation <= (push_valid_i & pop_grant_i);	-- Concatenates the two control inputs for the 'case, when' statement.
+		operation <= (((not full_reg) and push_valid_i) & ((not empty_reg) and pop_grant_i));	-- Concatenates the two control inputs for the 'case, when' statement.
 		process(write_ptr_reg, write_ptr_succ, read_ptr_reg, read_ptr_succ,
 				  operation, full_reg, empty_reg)
 		begin
@@ -101,9 +122,9 @@ architecture Behavioral of Fifo is
 						end if;
 					end if;
 				when others => 										-- Write and Read at the same time.
-					write_ptr_next <= write_ptr_succ;
 					read_ptr_next <= read_ptr_succ;
-				end case;
+					write_ptr_next <= write_ptr_succ;
+			end case;
 		end process;
 		
 		-- Output STATUS
