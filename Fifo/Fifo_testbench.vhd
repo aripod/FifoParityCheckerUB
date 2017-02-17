@@ -95,13 +95,32 @@ BEGIN
    -- Stimulus process
    stim_proc: process
    begin		
-      -- hold reset state for 21 ns when the clk changes its state, it does not match with the stimulus.
-      wait for 21 ns;	
+      -- hold reset state for 11 ns when the clk changes its state, it does not match with the stimulus.
+      wait for 11 ns;	
+		rst_n <= '1';
+		wait for clk_period;
+
+--		push_valid_i <= '1';
+--		push_data_i <= "1001";
+--		wait for clk_period;
+--		push_data_i <= "1010";
+--		wait for clk_period;
+--		push_data_i <= "1011";
+--		wait for clk_period;
+--		push_data_i <= "1100";
+--		pop_grant_i <= '1';
+--		wait for clk_period;
+--		-- FIFO is full
+--		push_data_i <= "1101";
+--		wait for clk_period;
+--		push_valid_i <= '0';
+--		-- ** FIFO is FULL at this point. Now it is emptied ** --
+--		--pop_grant_i <= '1';
+--		wait for 4*clk_period;
 
 		-- ** Mimics example from exercise ** --
-        rst_n <= '1';
 		pop_grant_i <= '0';
-		wait for clk_period;
+		--wait for clk_period;
 		-- Cycle 2
 		push_valid_i <= '1';
 		push_data_i <= "1001";
