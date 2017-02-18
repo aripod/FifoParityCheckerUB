@@ -17,10 +17,12 @@
 %Binary operators: http://www.access2science.com/latex/Binary.html
 %General help: http://en.wikibooks.org/wiki/LaTeX/Mathematics
 %Or just google stuff
- 
+
+\newcommand{\newtext}[1]{\textcolor[rgb]{0.55,0.47,0.06}{#1}}
+
 \newcommand{\mytext}[1]{{\normalfont{\textit{#1}}}}
 \newcommand{\fifo}{FIFO\xspace}
-\newcommand{\paritycheck}{Parity Check}
+\newcommand{\paritycheck}{Parity Check\xspace}
 
 \title{Pre-interview exercise: FIFO with Parity Check}
 \author{Ariel Podlubne}
@@ -30,32 +32,59 @@
 The present report describes the work done to design and test a \fifo with a \paritycheck. The sections bellow describe all their parts and how they were designed.
  
 \section{\fifo and \paritycheck}
+\label{sec:fifo and paritycheck}
+This two modules were designed separately and each one tested with its own testbench. Afterwards, they were both instantiated in a TOP module.
+
 \subsection{\fifo}
 The \fifo has different output and input ports, which can be divided in \textit{data}, \textit{control} and \textit{status}.
 
-\begin{table}[]
-\centering
-\ref{ref: table - data}
-\caption{Data}
-\label{my-label}
-\begin{tabular}{|l|l|}
-\hline
-\multicolumn{2}{|l|}{Data} \\ \hline
-push\_data    & In port    \\ \hline
-pop\_data     & Out Port   \\ \hline
-\end{tabular}
-\end{table}
+\begin{itemize}
+	\item Data
+	\begin{itemize}
+		\item push\_data: In port.
+		\item pop\_data: Out port.
+	\end{itemize}
+	\item Control
+	\begin{itemize}
+		\item A
+		\item B
+	\end{itemize}
+	\item Status
+	\begin{itemize}
+		\item A
+		\item B
+	\end{itemize}
+\end{itemize}
 
 \subsection{\paritycheck}
 
-Data that it is \textit{pushed} includes a parity bit. Therefore, the task of this block is to calculate the parity of the raw data (without the parity bit) and check if they match. This module can be divided in three blocks. The first one is to retrieve the parity bit, which can be in the MSB or LSB. This will depend on constant values defined on "my\_pkg.vhd". The second one, calculates the parity of the raw data (without the included parity bit) and the third one compares if the included parity and the calculate match. If they do.
-
-The \paritycheck retrieves data from the \fifo if the receiver is ready to BLA BLA BLA BLA BLA BLA BALB ALB ALB ALB A.
-
-The \paritycheck retrieves data from the \fifo if the receiver is ready to BLA BLA BLA BLA BLA BLA BALB ALB ALB ALB A.
+Data that it is \textit{pushed} includes a parity bit. Therefore, the task of this block is to calculate the parity of the raw data (without the parity bit) and check if they match. This module can be divided in three \textit{concurrent} blocks. The first one is to retrieve the parity bit, which can be in the MSB or LSB. This will depend on constant values defined on "my\_pkg.vhd". The second one, calculates the parity of the raw data (without the included parity bit) by XOR-ing all the data bits. If the result is 1, the calculated parity will be \textit{odd} and \textit{even} if 0. The third one compares if the included parity and the calculate match. If they do, \textit{valid\_o} will be 1 and 0 if they don not. As this is a concurrent design, there is an enable condition that has to be true, which happens when the receiver is ready to read new data (grant\_i) and the \fifo has data available (valid\_i). 
 
 \section{Test Environment}
+This module serves as a testbench for the one described in section \ref{sec:fifo and paritycheck} which is instantiated as well as the three modules described next.
 
+\subsection{Traffic Generator}
+This module receives the \textit{text vectors} provided by the stimulus in the testbench. It separates the raw data and the traffic type (Table \ref{table:traffic type}) to be sent to their respective modules. Depending on the traffic type, \textit{valid\_i} changes whether data is pushed or not into the \fifo for the current test vector.
+
+\subsection{Grant\_in Generator}
+This block receives the two bit vector with the traffic type and changes its \textit{grant\_i} output accordingly.  The four different possibilities are described in table \ref{table:traffic type}
+
+\begin{table}[H]
+\centering
+\caption{Traffic Type}
+\label{table:traffic type}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Traffic Type & Status   & grant\_i & Function                                                                    \\ \hline
+00           & FULL     & 0        & Data is pushed into the \fifo until it is full \\ \hline
+01           & EMPTY    & 1        & Data is constantly poped                          \\ \hline
+10           & 100\% BW & 1        & Data is pushed and poped simultaneously.                                    \\ \hline
+11           & 50\% BW  & Changes  & The clk signal is divided by 2 to have a 50\% BW                                                   \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Checker}
+This module checks the incoming and the outcoming data.  It counts poped data with correct parity which will depend on the output of the \paritycheck and the one that is not correct.  These two values are part of its output as ''passed'' and ''dropped'' ports.  They are both 8-bit ports.  Therefore, the length of the test (number of test vectors) has equal or less than 255, otherwise these two ports might overflow.  In case there is need for larger tests, these ports can have more bits, but the module will have to be re-synthesize. 
 
 \section{Conclusion}
 
