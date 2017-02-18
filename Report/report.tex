@@ -1,0 +1,62 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{xspace}
+ 
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+ 
+%\newenvironment{problem}[2][Problem]{\begin{trivlist}
+%\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+%If you want to title your bold things something different just make another thing exactly like this but replace "problem" with the name of the thing you want, like theorem or lemma or whatever
+ 
+\begin{document}
+ 
+%\renewcommand{\qedsymbol}{\filledbox}
+%Good resources for looking up how to do stuff:
+%Binary operators: http://www.access2science.com/latex/Binary.html
+%General help: http://en.wikibooks.org/wiki/LaTeX/Mathematics
+%Or just google stuff
+ 
+\newcommand{\mytext}[1]{{\normalfont{\textit{#1}}}}
+\newcommand{\fifo}{FIFO\xspace}
+\newcommand{\paritycheck}{Parity Check}
+
+\title{Pre-interview exercise: FIFO with Parity Check}
+\author{Ariel Podlubne}
+\maketitle
+ 
+\section{Introduction}
+The present report describes the work done to design and test a \fifo with a \paritycheck. The sections bellow describe all their parts and how they were designed.
+ 
+\section{\fifo and \paritycheck}
+\subsection{\fifo}
+The \fifo has different output and input ports, which can be divided in \textit{data}, \textit{control} and \textit{status}.
+
+\begin{table}[]
+\centering
+\ref{ref: table - data}
+\caption{Data}
+\label{my-label}
+\begin{tabular}{|l|l|}
+\hline
+\multicolumn{2}{|l|}{Data} \\ \hline
+push\_data    & In port    \\ \hline
+pop\_data     & Out Port   \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{\paritycheck}
+
+Data that it is \textit{pushed} includes a parity bit. Therefore, the task of this block is to calculate the parity of the raw data (without the parity bit) and check if they match. This module can be divided in three blocks. The first one is to retrieve the parity bit, which can be in the MSB or LSB. This will depend on constant values defined on "my\_pkg.vhd". The second one, calculates the parity of the raw data (without the included parity bit) and the third one compares if the included parity and the calculate match. If they do.
+
+The \paritycheck retrieves data from the \fifo if the receiver is ready to BLA BLA BLA BLA BLA BLA BALB ALB ALB ALB A.
+
+The \paritycheck retrieves data from the \fifo if the receiver is ready to BLA BLA BLA BLA BLA BLA BALB ALB ALB ALB A.
+
+\section{Test Environment}
+
+
+\section{Conclusion}
+
+\end{document}
