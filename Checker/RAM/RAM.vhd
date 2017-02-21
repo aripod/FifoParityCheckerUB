@@ -1,3 +1,11 @@
+----------------------------------------------------------------------------------
+-- Author: Ariel Podlubne
+-- Task: Design and verification of a FIFO with parity checker.
+-- Reason: Excersie pre-interview (Universita di Bologna - Prof. Benini, Prof. Rossi)
+
+-- Component: RAM module's design.
+-- Description: Synchronous RAM with input and output ports that can be written to and read from at the same time.
+----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 USE ieee.numeric_std.ALL; 
@@ -18,18 +26,6 @@ architecture Behavioral of RAM is
 	signal ram : ram_datatype := (others => (others => '0'));
 	signal output : std_logic_vector(FIFO_WIDTH-1 downto 0) := (others =>'0');
 begin
---	process(clk) is
---	begin
---	  if(clk'event and clk='1') then
---		 if(wr='1') then -- Write to RAM
---			ram(to_integer(unsigned(address_i))) <= data_i;
---		 end if;
---		 if(rd='1') then -- Read from RAM
---			output <= ram(to_integer(unsigned(address_o)));      
---		 end if;
---	  end if;
---	end process;
---	data_o <= output;
 
 	process(clk) is
 	begin
