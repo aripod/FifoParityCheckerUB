@@ -9,8 +9,13 @@ entity TestEnvironment_TOP is
            stimulus : in  STD_LOGIC_VECTOR (STIMULUS_WIDTH-1 downto 0);
            Passed : out  STD_LOGIC_VECTOR (7 downto 0);
            Dropped : out  STD_LOGIC_VECTOR (7 downto 0);
-           Loss : out  STD_LOGIC_VECTOR (7 downto 0);
-			  Blink : out STD_LOGIC);
+           Loss : out  STD_LOGIC_VECTOR (COUNTER_BITS-1 downto 0);
+			  
+			  -- ** PORTs to show results ** --
+			  port_data_o: out STD_LOGIC_VECTOR(FIFO_WIDTH-1 downto 0);
+			  port_data_i: out STD_LOGIC_VECTOR(FIFO_WIDTH-1 downto 0);
+			  port_grant_i: out STD_LOGIC
+			  );
 end TestEnvironment_TOP;
 
 architecture Behavioral of TestEnvironment_TOP is
@@ -63,9 +68,13 @@ begin
 		grant_i => top_grant_i,
 		passed_o => Passed,
 		dropped_o => Dropped,
-		loss_o => Loss,
-		test => Blink
+		loss_o => Loss
 	);
+	
+	-- ** PORTs to show results ** --
+	port_data_o <= top_data_o;
+	port_data_i <= top_data_i;
+	port_grant_i <= top_grant_i;
 
 end Behavioral;
 
