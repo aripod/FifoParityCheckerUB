@@ -1,3 +1,11 @@
+----------------------------------------------------------------------------------
+-- Author: Ariel Podlubne
+-- Task: Design and verification of a FIFO with parity checker.
+-- Reason: Excersie pre-interview (Universita di Bologna - Prof. Benini, Prof. Rossi)
+
+-- Component: Traffic Generator design.
+-- Description: Takes the test vectors supplied by the testbench, separates data from traffic type and generates the corresponding valid_i value.
+----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use WORK.my_pkg.ALL;
@@ -21,8 +29,8 @@ begin
 		begin
 		if(clk'event and clk='1') then
 			if(ce='1') then
-				data_i <= stimulus(STIMULUS_WIDTH-1 downto 2);
-				traffic_type <= stimulus(1 downto 0);
+				data_i <= stimulus(STIMULUS_WIDTH-1 downto 2);		-- Retrieves the data embedded in the stimulus.
+				traffic_type <= stimulus(1 downto 0);					-- Retrieves the traffic type embedded in the stimulus.
 				
 				if(stimulus(1 downto 0)="01" and grant_o='1') then		-- Only DON NOT push into the FIFO in "empty" traffic type.
 					valid_i <='0';

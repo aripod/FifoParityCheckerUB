@@ -3,9 +3,8 @@
 -- Task: Design and verification of a FIFO with parity checker.
 -- Reason: Excersie pre-interview (Universita di Bologna - Prof. Benini, Prof. Rossi)
 
--- Component: Top design.
--- Description: Instantiation of FIFO and ParityCheck:
---
+-- Component: Fifo and Parity Check Top module design 
+-- Description: Instantiation of FIFO and ParityCheck.
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;

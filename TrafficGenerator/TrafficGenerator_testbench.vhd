@@ -1,3 +1,11 @@
+----------------------------------------------------------------------------------
+-- Author: Ariel Podlubne
+-- Task: Design and verification of a FIFO with parity checker.
+-- Reason: Excersie pre-interview (Universita di Bologna - Prof. Benini, Prof. Rossi)
+
+-- Component: Traffic Generator testbench.
+-- Description: Loops through the array containing the test vectors.
+----------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE WORK.my_pkg.ALL;
@@ -65,6 +73,7 @@ BEGIN
       -- hold reset state for 100 ns.
       wait for 21 ns;
 
+		-- ** Loops thorugh all the test vectors ** --
       ce <= '1';
 		for i in 0 to TEST_LENGTH-1 loop
 			stimulus <= traffic(i);
