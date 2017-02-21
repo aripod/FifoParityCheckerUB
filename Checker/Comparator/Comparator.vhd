@@ -12,7 +12,7 @@ architecture Behavioral of Comparator is
 
 begin
 
-	Q <= '1' when A/=B else '0';
+	Q <= '1' when A=B else '0';
 
 end Behavioral;
 

@@ -32,6 +32,7 @@ package my_pkg is
 		
 		-- ** Parameters for the Test Environment ** --
 		constant TEST_LENGTH 		: positive := 16;					-- Number of steps in the test.
+		constant TEST_FIFO_DEPTH	: positive := 4;					-- Depth of the FIFOs to store pushed and poped data.
 		constant STIMULUS_WIDTH		: positive := (FIFO_WIDTH+2);	-- Width of the stimulus (with valid_i included (Data+1 bit)).
 		constant PUSH_AMOUNT 		: positive :=10;					-- 4 (FULL) + 4 (MAX BW) + 2 (50% BW).
 		type datatraffic is array (0 to TEST_LENGTH-1) of STD_LOGIC_VECTOR(STIMULUS_WIDTH-1 downto 0);
@@ -42,5 +43,9 @@ package my_pkg is
 											     "000001", "000001", "000001", "000001",		-- EMPTY. Data does not matter as it is poped, not pushed.
 											     "100110", "101010", "101110", "110010", 	-- Full BW. Data is different to test ParityCheck.
 											     "100111", "101011", "101111", "110011");	-- 50% BW. 
-		
+												  
+		constant COUNTER_BITS: positive := 4;
+		constant RAM_BITS: positive := 4;
+	
+	
 end my_pkg;
