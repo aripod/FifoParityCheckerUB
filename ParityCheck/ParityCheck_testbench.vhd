@@ -1,30 +1,11 @@
---------------------------------------------------------------------------------
--- Company: 
--- Engineer:
---
--- Create Date:   10:59:34 02/15/2017
--- Design Name:   
--- Module Name:   /home/ariel/Documents/VHDL/FifoParityCheckerUB/ParityCheck/ParityCheck_testbench.vhd
--- Project Name:  ParityCheck
--- Target Device:  
--- Tool versions:  
--- Description:   
--- 
--- VHDL Test Bench Created by ISE for module: ParityCheck
--- 
--- Dependencies:
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
---
--- Notes: 
--- This testbench has been automatically generated using types std_logic and
--- std_logic_vector for the ports of the unit under test.  Xilinx recommends
--- that these types always be used for the top-level I/O of a design in order
--- to guarantee that the testbench will bind correctly to the post-implementation 
--- simulation model.
---------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
+-- Author: Ariel Podlubne
+-- Task: Design and verification of a FIFO.
+-- Reason: Excersie pre-interview (Universita di Bologna - Prof. Benini, Prof. Rossi)
+
+-- Component: Parity Checker Testbench
+-- Description: Checks the parity of the DATA coming from the FIFO.
+----------------------------------------------------------------------------------LIBRARY ieee;
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
  
@@ -81,7 +62,8 @@ BEGIN
 		parity_valid_i <= '1';		-- There is data available in the FIFO to POP.
 		parity_grant_i <= '1';		-- The reciever is ready to get data.
       
-		parity_data_i <= "0101";
+
+		parity_data_i <= "0101";	-- Input data with 
 		wait for 10 ns;
 		parity_data_i <= "1100";
 		wait for 10 ns;

@@ -3,8 +3,8 @@
 -- Task: Design and verification of a FIFO.
 -- Reason: Excersie pre-interview (Universita di Bologna - Prof. Benini, Prof. Rossi)
 
--- Component: Parity Checker
--- Description: Checks parity of the DATA coming from the FIFO.
+-- Component: Parity Checker Design
+-- Description: Checks the parity of the DATA coming from the FIFO.
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
