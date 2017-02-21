@@ -1,3 +1,11 @@
+----------------------------------------------------------------------------------
+-- Author: Ariel Podlubne
+-- Task: Design and verification of a FIFO with parity checker.
+-- Reason: Excersie pre-interview (Universita di Bologna - Prof. Benini, Prof. Rossi)
+
+-- Component: TestEnvironment TOP module's design.
+-- Description: Instantiates all the smaller (and simpler) modules to test the FifoParityCheck module.
+----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use WORK.my_pkg.ALL;
