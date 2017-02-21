@@ -1,9 +1,13 @@
+----------------------------------------------------------------------------------
+-- Author: Ariel Podlubne
+-- Task: Design and verification of a FIFO with parity checker.
+-- Reason: Excersie pre-interview (Universita di Bologna - Prof. Benini, Prof. Rossi)
+
+-- Component: Grant_in Generator module' testbench. 
+-- Description: It injects the 4 different modes that traffic_type can be.
+----------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
- 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---USE ieee.numeric_std.ALL;
  
 ENTITY Grant_In_Generator_testbench IS
 END Grant_In_Generator_testbench;
@@ -54,7 +58,7 @@ BEGIN
    stim_proc: process
    begin		
       -- hold reset state for 100 ns.
-      wait for 100 ns;	
+      wait for 10 ns;	
 
       traffic_type <= "00";
 		wait for 4*clk_period;

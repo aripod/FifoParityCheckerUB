@@ -1,3 +1,12 @@
+----------------------------------------------------------------------------------
+-- Author: Ariel Podlubne
+-- Task: Design and verification of a FIFO with parity checker.
+-- Reason: Excersie pre-interview (Universita di Bologna - Prof. Benini, Prof. Rossi)
+
+-- Component: Grant_in Generator module design 
+-- Description: Works as a decoder with traffic_type as its input. The "special feature" is that in one particular case (11), 
+--					 it behaves as a frequency divider (by 2).
+----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -24,8 +33,6 @@ begin
 					tmp <= not tmp;
 				end if;
 		end case;
-		grant_i <= tmp;
 	end process;
-
+	grant_i <= tmp;
 end Behavioral;
-
